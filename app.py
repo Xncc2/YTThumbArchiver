@@ -118,20 +118,20 @@ def get_video_thumbnails(channel_id):
         thumbnails.append({
             "video_id": video_id,
             "main": [
-                f'https://img.youtube.com/vi/{video_id}/maxresdefault.jpg',
-                f'https://img.youtube.com/vi/{video_id}/hq720.jpg',
-                f'https://img.youtube.com/vi/{video_id}/sddefault.jpg'
+                f'https://i.ytimg.com/vi/{video_id}/maxresdefault.jpg',
+                f'https://i.ytimg.com/vi/{video_id}/hq720.jpg',
+                f'https://i.ytimg.com/vi/{video_id}/sddefault.jpg'
             ],
             "auto": [
-                f'https://img.youtube.com/vi/{video_id}/hq1.jpg',
-                f'https://img.youtube.com/vi/{video_id}/hq2.jpg',
-                f'https://img.youtube.com/vi/{video_id}/hq3.jpg',
-                f'https://img.youtube.com/vi/{video_id}/sd1.jpg',
-                f'https://img.youtube.com/vi/{video_id}/sd2.jpg',
-                f'https://img.youtube.com/vi/{video_id}/sd3.jpg',
-                f'https://img.youtube.com/vi/{video_id}/mq1.jpg',
-                f'https://img.youtube.com/vi/{video_id}/mq2.jpg',
-                f'https://img.youtube.com/vi/{video_id}/mq3.jpg'
+                f'https://i.ytimg.com/vi/{video_id}/hq1.jpg',
+                f'https://i.ytimg.com/vi/{video_id}/hq2.jpg',
+                f'https://i.ytimg.com/vi/{video_id}/hq3.jpg',
+                f'https://i.ytimg.com/vi/{video_id}/sd1.jpg',
+                f'https://i.ytimg.com/vi/{video_id}/sd2.jpg',
+                f'https://i.ytimg.com/vi/{video_id}/sd3.jpg',
+                f'https://i.ytimg.com/vi/{video_id}/mq1.jpg',
+                f'https://i.ytimg.com/vi/{video_id}/mq2.jpg',
+                f'https://i.ytimg.com/vi/{video_id}/mq3.jpg'
             ]
         })
 
