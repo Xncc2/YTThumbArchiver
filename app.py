@@ -50,6 +50,46 @@ HTML_TEMPLATE = """
 </html>
 """
 
+FORM_TEMPLATE = """
+<!DOCTYPE html>
+<html>
+<head>
+    <title>YouTube Thumbnail Fetcher</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding: 50px;
+        }
+        input[type="text"] {
+            padding: 10px;
+            width: 300px;
+            font-size: 16px;
+        }
+        input[type="submit"] {
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        input[type="submit"]:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <h1>YouTube Thumbnail Fetcher</h1>
+    <form method="POST" action="/">
+        <label for="channel_id">Enter YouTube Channel ID:</label><br><br>
+        <input type="text" id="channel_id" name="channel_id" placeholder="e.g., UC_x5XG1OV2P6uZZ5FSM9Ttw" required><br><br>
+        <input type="submit" value="Get Thumbnails">
+    </form>
+</body>
+</html>
+"""
+
 def get_video_thumbnails(channel_id):
     def extract_video_ids(url):
         ydl_opts = {
@@ -101,6 +141,14 @@ def get_video_thumbnails(channel_id):
 def thumbnails(channel_id):
     thumbnails = get_video_thumbnails(channel_id)
     return render_template_string(HTML_TEMPLATE, channel_id=channel_id, thumbnails=thumbnails)
+
+@app.route("/", methods=["GET", "POST"])
+def index():
+    if request.method == "POST":
+        channel_id = request.form.get("channel_id")
+        if channel_id:
+            return redirect(url_for("thumbnails", channel_id=channel_id))
+    return render_template_string(FORM_TEMPLATE)
 
 if __name__ == "__main__":
     app.run(debug=True)
