@@ -147,7 +147,7 @@ def index():
     if request.method == "POST":
         channel_id = request.form.get("channel_id")
         if channel_id:
-            return redirect(url_for("thumbnails", channel_id=channel_id))
+            return redirect("https://web.archive.org/save/https://ytthumbarchiver.onrender.com/thumbnails/"+channel_id)
     return render_template_string(FORM_TEMPLATE)
 
 if __name__ == "__main__":
