@@ -43,6 +43,9 @@ HTML_TEMPLATE = """
                 {% for thumb in video.auto %}
                     <img src="{{ thumb }}" onerror="this.style.display='none';" alt="Auto Thumbnail">
                 {% endfor %}
+                <br>
+                <strong>Animated Thumbnail:</strong><br>
+                <img src="{{ video.animated }}" onerror="this.style.display='none';" alt="Animated Thumbnail">
             </div>
         {% endfor %}
     </div>
@@ -106,12 +109,36 @@ def get_video_thumbnails(channel_id):
         f'https://www.youtube.com/channel/{channel_id}/videos',
         f'https://www.youtube.com/channel/{channel_id}/shorts'
     ]
-
+    video_ids = []
     with concurrent.futures.ThreadPoolExecutor(max_workers=2) as executor:
         future_to_url = {executor.submit(extract_video_ids, url): url for url in urls}
-        video_ids = []
         for future in concurrent.futures.as_completed(future_to_url):
             video_ids.extend(future.result())
+
+    def fetch_animated(video_id):
+        video_url = f'https://www.youtube.com/watch?v={video_id}'
+        ydl_opts = {
+            'quiet': True,
+            'skip_download': True
+        }
+        with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+            video_info = ydl.extract_info(video_url, download=False)
+            animated_url = None
+            if 'thumbnails' in video_info:
+                for thumb in video_info['thumbnails']:
+                    if '/an_webp/' in thumb.get('url', ''):
+                        animated_url = thumb.get('url')
+                        break
+            if not animated_url:
+                animated_url = f'https://i.ytimg.com/vi/{video_id}/maxresdefault.jpg'
+            return animated_url
+
+    animated_urls = {}
+    with concurrent.futures.ThreadPoolExecutor(max_workers=5) as executor:
+        future_to_video = {executor.submit(fetch_animated, vid): vid for vid in video_ids}
+        for future in concurrent.futures.as_completed(future_to_video):
+            vid = future_to_video[future]
+            animated_urls[vid] = future.result()
 
     thumbnails = []
     for video_id in video_ids:
@@ -132,7 +159,8 @@ def get_video_thumbnails(channel_id):
                 f'https://i.ytimg.com/vi/{video_id}/mq1.jpg',
                 f'https://i.ytimg.com/vi/{video_id}/mq2.jpg',
                 f'https://i.ytimg.com/vi/{video_id}/mq3.jpg'
-            ]
+            ],
+            "animated": animated_urls.get(video_id, "")
         })
 
     return thumbnails
@@ -147,7 +175,7 @@ def index():
     if request.method == "POST":
         channel_id = request.form.get("channel_id")
         if channel_id:
-            return redirect("https://web.archive.org/save/https://ytthumbarchiver.onrender.com/thumbnails/"+channel_id)
+            return redirect(url_for("thumbnails", channel_id=channel_id))
     return render_template_string(FORM_TEMPLATE)
 
 if __name__ == "__main__":
