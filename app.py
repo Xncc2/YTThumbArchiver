@@ -105,11 +105,9 @@ def get_video_thumbnails(channel_id):
             if 'entries' in result:
                 return [video['id'] for video in result['entries']]
             return []
-        except ExtractorError as e:
-            if "does not have a" in str(e):
-                return []
-            else:
-                raise e
+        except:
+            return []
+            pass
     urls = [
         f'https://www.youtube.com/channel/{channel_id}/videos',
         f'https://www.youtube.com/channel/{channel_id}/shorts'
