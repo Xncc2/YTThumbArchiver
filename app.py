@@ -99,12 +99,17 @@ def get_video_thumbnails(channel_id):
             'quiet': True,
             'extract_flat': True,
         }
-        with yt_dlp.YoutubeDL(ydl_opts) as ydl:
-            result = ydl.extract_info(url, download=False)
+        try:
+            with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+                result = ydl.extract_info(url, download=False)
             if 'entries' in result:
                 return [video['id'] for video in result['entries']]
             return []
-
+        except ExtractorError as e:
+            if "does not have a" in str(e):
+                return []
+            else:
+                raise e
     urls = [
         f'https://www.youtube.com/channel/{channel_id}/videos',
         f'https://www.youtube.com/channel/{channel_id}/shorts'
